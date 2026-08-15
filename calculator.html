@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ace Values - Calculator</title>
+
+    <style>
+        body {
+    background-color: #00101c;
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    min-height: 100vh;
+    margin: 0;
+}
+button {
+    background-color: #252b30;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+}
+    </style>
+</head>
+
+<body>
+
+    <h1>Values</h1>
+
+    <div>
+        <h2>Check Fruit Value</h2>
+
+        <input
+            type="text"
+            id="fruitInput"
+            placeholder="Enter fruit name"
+        >
+
+        <button onclick="checkValue()">Check Value</button>
+
+        <p id="result"></p>
+    </div>
+
+    <br>
+
+    <button onclick="window.location.href='project.html'">
+        Go Back
+    </button>
+
+
+    <script>
+    function checkValue() {
+
+        let fruit = document
+            .getElementById("fruitInput")
+            .value
+            .toLowerCase()
+            .trim();
+
+        const values = {
+            rocket: 5000,
+            spin: 7500,
+            blade: 50000,
+            spring: 60000,
+            bomb: 80000,
+            smoke: 100000,
+            spike: 180000,
+            flame: 250000,
+            dark: 400000,
+            ice: 550000,
+            rubber: 700000,
+            eagle: 800000,
+            ghost: 800000,
+            light: 800000,
+            diamond: 1000000,
+            quake: 1000000,
+            magma: 1150000,
+            love: 1500000,
+            spider: 1500000,
+            sound: 2500000,
+            phoenix: 2750000,
+            shadow: 6500000,
+            portal: 10000000,
+            buddha: 10000000,
+            blizzard: 5000000,
+            creation: 2500000,
+            pain: 10000000,
+            "t-rex": 20000000,
+            gravity: 10000000,
+            mammoth: 10000000,
+            spirit: 10000000,
+            gas: 60000000,
+            tiger: 130000000,
+            lightning: 50000000,
+            venom: 20000000,
+            dough: 30000000,
+            "west dragon": 3910000000,
+            "east dragon": 3360000000,
+            kitsune: 640000000,
+            control: 160000000,
+            yeti: 120000000,
+            // LIMITED ITEMS
+            "rabid dog": 6240000000,
+            "dog blade": 580000000,
+            "fiend yeti": 960000000,
+            "galaxy empyrean kitsune": 11960000000,
+            "ember west dragon": 7100000000,
+            "crimson kitsune": 8700000000,
+            "meme-meme": 4610000000,
+            "divine portal": 1670000000,
+            "purple lightning": 5340000000,
+            "red lightning": 2880000000,
+            "yellow lightning": 1760000000,
+            "green lightning": 410000000,
+            werewolf: 1060000000,
+            "rose quartz diamond": 350000000,
+            "emerald diamond": 220000000,
+            "topaz diamond": 220000000,
+            "ruby diamond": 160000000,
+            "super spirit pain": 3300000000,
+            "torment pain": 160000000,
+            "sadness pain": 860000000,
+            "frustration pain": 900000000,
+            "celestial pain": 1020000000,
+            "eagle requiem": 160000000,
+            "eagle glacier": 20000000,
+            "eagle matrix": 250000000,
+            "celebration bomb": 10000000,
+            "azura bomb": 640000000,
+            "thermite bomb": 580000000,
+            "nuclear bomb": 610000000,
+            // GAMEPASSES
+            "fruit notifier": 4790000000,
+            "dark blade": 1020000000,
+            "mythical scrolls": 1590000000,
+            "legendary scrolls": 680000000,
+            "+1 fruit storage": 450000000,
+            "2x mastery": 450000000,
+            "2x money": 450000000,
+            "2x boss drops": 300000000,
+            "fast boats": 300000000
+        };
+
+        const aliases = {
+            "dragon west": "west dragon",
+            "western dragon": "west dragon",
+            "west drag": "west dragon",
+
+            "dragon east": "east dragon",
+            "eastern dragon": "east dragon",
+            "east drag": "east dragon",
+
+            "t rex": "t-rex",
+            "trex": "t-rex",
+
+            "budha": "buddha",
+            "buda": "buddha",
+
+            "kit": "kitsune",
+            "kitsu": "kitsune"
+        };
+
+        if (aliases[fruit]) {
+            fruit = aliases[fruit];
+        }
+
+        if (values[fruit] !== undefined) {
+            showResult(fruit, values[fruit]);
+            return;
+        }
+
+        const fruitNames = Object.keys(values);
+
+        let closestFruit = null;
+        let smallestDistance = Infinity;
+
+        for (let name of fruitNames) {
+            const distance = levenshteinDistance(fruit, name);
+
+            if (distance < smallestDistance) {
+                smallestDistance = distance;
+                closestFruit = name;
+            }
+        }
+
+        if (smallestDistance <= 2) {
+            showResult(
+                closestFruit,
+                values[closestFruit],
+                fruit
+            );
+        } else {
+            document.getElementById("result").textContent =
+                "Fruit not found.";
+        }
+    }
+
+
+    function showResult(fruit, value, originalSearch = null) {
+
+        let message =
+            fruit + " is worth $" + value.toLocaleString();
+
+        if (originalSearch !== null) {
+            message =
+                'Did you mean "' +
+                fruit +
+                '"? ' +
+                fruit +
+                " is worth $" +
+                value.toLocaleString();
+        }
+
+        document.getElementById("result").textContent = message;
+    }
+
+
+    function levenshteinDistance(a, b) {
+
+        const matrix = [];
+
+        for (let i = 0; i <= b.length; i++) {
+            matrix[i] = [i];
+        }
+
+        for (let j = 0; j <= a.length; j++) {
+            matrix[0][j] = j;
+        }
+
+        for (let i = 1; i <= b.length; i++) {
+
+            for (let j = 1; j <= a.length; j++) {
+
+                if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                    matrix[i][j] =
+                        matrix[i - 1][j - 1];
+                } else {
+                    matrix[i][j] =
+                        Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+                }
+            }
+        }
+
+        return matrix[b.length][a.length];
+    }
+</script>
+
+</body>
+</html>
