@@ -1,261 +1,1953 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Ace Values - Calculator</title>
 
+
     <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
         body {
-    background-color: #00101c;
-    color: white;
+            background:
+                radial-gradient(
+                    circle at top,
+                    #071d2b 0%,
+                    #00101c 45%,
+                    #000000 100%
+                );
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+            background-attachment: fixed;
 
-    min-height: 100vh;
-    margin: 0;
-}
-button {
-    background-color: #252b30;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 18px;
-    cursor: pointer;
-}
+            color: white;
+
+            min-height: 100vh;
+
+            margin: 0;
+
+            font-family: Arial, sans-serif;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+        }
+
+
+        .page {
+            width: 100%;
+
+            max-width: 750px;
+
+            padding: 60px 20px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+        }
+
+
+        h1 {
+            font-size: 55px;
+
+            margin-bottom: 15px;
+        }
+
+
+        h2 {
+            font-size: 30px;
+
+            text-align: center;
+        }
+
+
+        .search-area {
+            width: 100%;
+
+            text-align: center;
+        }
+
+
+        .search-row {
+            display: flex;
+
+            justify-content: center;
+
+            gap: 10px;
+        }
+
+
+        input {
+            width: 300px;
+
+            background-color: #111c2b;
+
+            color: white;
+
+            border: 1px solid #24445c;
+
+            padding: 14px;
+
+            border-radius: 8px;
+
+            font-size: 17px;
+
+            outline: none;
+        }
+
+
+        input:focus {
+            border-color: #39c6ff;
+        }
+
+
+        input::placeholder {
+            color: #8c98a4;
+        }
+
+
+        button {
+            background-color: #252b30;
+
+            color: white;
+
+            border: none;
+
+            padding: 14px 22px;
+
+            border-radius: 8px;
+
+            font-size: 18px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+
+        button:hover {
+            background-color: #343c43;
+
+            transform: translateY(-2px);
+        }
+
+
+        #result {
+            margin-top: 30px;
+
+            width: 100%;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+        }
+
+
+        #result:empty {
+            display: none;
+        }
+
+
+        .result-card {
+            width: 100%;
+
+            max-width: 430px;
+
+            padding: 25px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #111c2b,
+                    #07111c
+                );
+
+            border: 1px solid #24445c;
+
+            border-radius: 18px;
+
+            text-align: center;
+
+            box-shadow:
+                0 15px 40px
+                rgba(0, 0, 0, 0.4);
+        }
+
+
+        .item-image {
+            width: 180px;
+
+            height: 180px;
+
+            object-fit: contain;
+
+            margin-bottom: 15px;
+        }
+
+
+        .result-card h3 {
+            font-size: 30px;
+
+            margin:
+                5px
+                0
+                20px;
+        }
+
+
+        .item-info {
+            background-color:
+                rgba(0, 0, 0, 0.25);
+
+            border:
+                1px solid
+                #1e3547;
+
+            padding: 15px;
+
+            border-radius: 12px;
+        }
+
+
+        .info-row {
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            gap: 25px;
+
+            padding: 11px 0;
+
+            border-bottom:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.08
+                );
+
+            font-size: 18px;
+        }
+
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+
+        .label {
+            color: #aeb9c4;
+        }
+
+
+        .value {
+            color: #39c6ff;
+        }
+
+
+        .price {
+            color: #ffd500;
+        }
+
+
+        .demand {
+            color: #28e59a;
+        }
+
+
+        .fruit-type {
+            color: #78bfff;
+        }
+
+
+        .suggestion {
+            color: #aaaaaa;
+        }
+
+
+        .not-found {
+            color: #ff6868;
+
+            font-size: 18px;
+        }
+
+
+        .back-button {
+            margin-top: 35px;
+        }
+
+
+        @media (max-width: 600px) {
+
+            h1 {
+                font-size: 40px;
+            }
+
+
+            .search-row {
+                flex-direction: column;
+            }
+
+
+            input {
+                width: 100%;
+            }
+
+
+            .search-row button {
+                width: 100%;
+            }
+
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
+
+<div class="page">
+
+
     <h1>Values</h1>
 
-    <div>
-        <h2>Check Fruit Value</h2>
 
-        <input
-            type="text"
-            id="fruitInput"
-            placeholder="Enter fruit name"
-        >
+    <div class="search-area">
 
-        <button onclick="checkValue()">Check Value</button>
 
-        <p id="result"></p>
+        <h2>Check Item Value</h2>
+
+
+        <div class="search-row">
+
+
+            <input
+                type="text"
+                id="fruitInput"
+                placeholder="Enter fruit or item name"
+            >
+
+
+            <button onclick="checkValue()">
+
+                Check Value
+
+            </button>
+
+
+        </div>
+
+
+        <div id="result"></div>
+
+
     </div>
 
-    <br>
 
-    <button onclick="window.location.href='index.html'">
-    Go Back
-</button>
+    <button
+        class="back-button"
+        onclick="window.location.href='index.html'"
+    >
+
+        Go Back
+
+    </button>
 
 
-    <script>
-    function checkValue() {
+</div>
 
-        let fruit = document
-            .getElementById("fruitInput")
-            .value
-            .toLowerCase()
-            .trim();
 
-        const values = {
-            rocket: 5000,
-            spin: 7500,
-            blade: 50000,
-            spring: 60000,
-            bomb: 80000,
-            smoke: 100000,
-            spike: 180000,
-            flame: 250000,
-            dark: 400000,
-            ice: 550000,
-            rubber: 700000,
-            eagle: 800000,
-            ghost: 800000,
-            light: 800000,
-            diamond: 1000000,
-            quake: 1000000,
-            magma: 1150000,
-            love: 1500000,
-            spider: 1500000,
-            sound: 2500000,
-            phoenix: 2750000,
-            shadow: 6500000,
-            portal: 10000000,
-            buddha: 10000000,
-            blizzard: 5000000,
-            creation: 2500000,
-            pain: 10000000,
-            "t-rex": 20000000,
-            gravity: 10000000,
-            mammoth: 10000000,
-            spirit: 10000000,
-            gas: 60000000,
-            tiger: 130000000,
-            lightning: 50000000,
-            venom: 20000000,
-            dough: 30000000,
-            "west dragon": 3910000000,
-            "east dragon": 3360000000,
-            kitsune: 640000000,
-            control: 160000000,
-            yeti: 120000000,
-            // LIMITED ITEMS
-            "rabid dog": 6240000000,
-            "dog blade": 580000000,
-            "fiend yeti": 960000000,
-            "galaxy empyrean kitsune": 11960000000,
-            "ember west dragon": 7100000000,
-            "crimson kitsune": 8700000000,
-            "meme": 4610000000,
-            "divine portal": 1670000000,
-            "purple lightning": 5340000000,
-            "red lightning": 2880000000,
-            "yellow lightning": 1760000000,
-            "green lightning": 410000000,
-            werewolf: 1060000000,
-            "rose quartz diamond": 350000000,
-            "emerald diamond": 220000000,
-            "topaz diamond": 220000000,
-            "ruby diamond": 160000000,
-            "super spirit pain": 3300000000,
-            "torment pain": 160000000,
-            "sadness pain": 860000000,
-            "frustration pain": 900000000,
-            "celestial pain": 1020000000,
-            "eagle requiem": 160000000,
-            "eagle glacier": 20000000,
-            "eagle matrix": 250000000,
-            "celebration bomb": 10000000,
-            "azura bomb": 640000000,
-            "thermite bomb": 580000000,
-            "nuclear bomb": 610000000,
-            // GAMEPASSES
-            "fruit notifier": 4790000000,
-            "dark blade": 1020000000,
-            "mythical scrolls": 1590000000,
-            "legendary scrolls": 680000000,
-            "+1 fruit storage": 450000000,
-            "2x mastery": 450000000,
-            "2x money": 450000000,
-            "2x boss drops": 300000000,
-            "fast boats": 300000000
-        };
 
-        const aliases = {
-            "dragon west": "west dragon",
-            "western dragon": "west dragon",
-            "west drag": "west dragon",
+<script>
 
-            "dragon east": "east dragon",
-            "eastern dragon": "east dragon",
-            "east drag": "east dragon",
 
-            "t rex": "t-rex",
-            "trex": "t-rex",
+const items = {
 
-            "budha": "buddha",
-            "buda": "buddha",
 
-            "kit": "kitsune",
-            "kitsu": "kitsune"
-        };
+/* ================================
+   COMMON FRUITS
+================================ */
 
-        if (aliases[fruit]) {
-            fruit = aliases[fruit];
-        }
 
-        if (values[fruit] !== undefined) {
-            showResult(fruit, values[fruit]);
-            return;
-        }
+rocket: {
+    value: 5000,
+    demand: "1/10",
+    price: 5000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Rocket_Fruit.webp"
+},
 
-        const fruitNames = Object.keys(values);
 
-        let closestFruit = null;
-        let smallestDistance = Infinity;
+spin: {
+    value: 7500,
+    demand: "1/10",
+    price: 7500,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Spin_Fruit.webp"
+},
 
-        for (let name of fruitNames) {
-            const distance = levenshteinDistance(fruit, name);
 
-            if (distance < smallestDistance) {
-                smallestDistance = distance;
-                closestFruit = name;
-            }
-        }
+blade: {
+    value: 50000,
+    demand: "1/10",
+    price: 30000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Blade_Fruit.webp"
+},
 
-        if (smallestDistance <= 2) {
-            showResult(
-                closestFruit,
-                values[closestFruit],
-                fruit
+
+spring: {
+    value: 60000,
+    demand: "1/10",
+    price: 60000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Spring_Fruit.webp"
+},
+
+
+bomb: {
+    value: 80000,
+    demand: "1/10",
+    price: 80000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Bomb_Fruit.webp"
+},
+
+
+smoke: {
+    value: 100000,
+    demand: "1/10",
+    price: 100000,
+    priceType: "Beli",
+    fruitType: "Logia",
+    image: "Smoke_Fruit.webp"
+},
+
+
+spike: {
+    value: 180000,
+    demand: "1/10",
+    price: 180000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Spike_Fruit.webp"
+},
+
+
+
+/* ================================
+   UNCOMMON FRUITS
+================================ */
+
+
+flame: {
+    value: 250000,
+    demand: "1/10",
+    price: 250000,
+    priceType: "Beli",
+    fruitType: "Logia",
+    image: "Flame_Fruit.webp"
+},
+
+
+dark: {
+    value: 400000,
+    demand: "1/10",
+    price: 500000,
+    priceType: "Beli",
+    fruitType: "Logia",
+    image: "Dark_Fruit.webp"
+},
+
+
+sand: {
+    value: 420000,
+    demand: "1/10",
+    price: 420000,
+    priceType: "Beli",
+    fruitType: "Logia",
+    image: "Sand_Fruit.webp"
+},
+
+
+ice: {
+    value: 550000,
+    demand: "2/10",
+    price: 350000,
+    priceType: "Beli",
+    fruitType: "Logia",
+    image: "Ice_Fruit.webp"
+},
+
+
+rubber: {
+    value: 700000,
+    demand: "1/10",
+    price: 750000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Rubber_Fruit.webp"
+},
+
+
+eagle: {
+    value: 800000,
+    demand: "2/10",
+    price: 550000,
+    priceType: "Beli",
+    fruitType: "Beast",
+    image: "Eagle_Fruit.webp"
+},
+
+
+
+/* ================================
+   RARE FRUITS
+================================ */
+
+
+ghost: {
+    value: 800000,
+    demand: "1/10",
+    price: 940000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Ghost_Fruit.webp"
+},
+
+
+light: {
+    value: 800000,
+    demand: "2/10",
+    price: 650000,
+    priceType: "Beli",
+    fruitType: "Logia",
+    image: "Light_Fruit.webp"
+},
+
+
+diamond: {
+    value: 1000000,
+    demand: "2/10",
+    price: 600000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Diamond_Fruit.webp"
+},
+
+
+quake: {
+    value: 1000000,
+    demand: "2/10",
+    price: 1000000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Quake_Fruit.webp"
+},
+
+
+magma: {
+    value: 1150000,
+    demand: "5/10",
+    price: 960000,
+    priceType: "Beli",
+    fruitType: "Logia",
+    image: "Magma_Fruit.webp"
+},
+
+
+
+/* ================================
+   LEGENDARY FRUITS
+================================ */
+
+
+love: {
+    value: 1500000,
+    demand: "3/10",
+    price: 1300000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Love_Fruit.webp"
+},
+
+
+spider: {
+    value: 1500000,
+    demand: "2/10",
+    price: 1500000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Spider_Fruit.webp"
+},
+
+
+sound: {
+    value: 2500000,
+    demand: "4/10",
+    price: 1700000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Sound_Fruit.webp"
+},
+
+
+phoenix: {
+    value: 2750000,
+    demand: "3/10",
+    price: 1800000,
+    priceType: "Beli",
+    fruitType: "Beast",
+    image: "Phoenix_Fruit.webp"
+},
+
+
+creation: {
+    value: 2500000,
+    demand: "2/10",
+    price: 1400000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Creation_Fruit.webp"
+},
+
+
+blizzard: {
+    value: 5000000,
+    demand: "5/10",
+    price: 2400000,
+    priceType: "Beli",
+    fruitType: "Logia",
+    image: "Blizzard_Fruit.webp"
+},
+
+
+portal: {
+    value: 10000000,
+    demand: "10/10",
+    price: 1900000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Portal_Fruit.webp"
+},
+
+
+buddha: {
+    value: 10000000,
+    demand: "10/10",
+    price: 1200000,
+    priceType: "Beli",
+    fruitType: "Beast",
+    image: "Buddha_Fruit.webp"
+},
+
+
+lightning: {
+    value: 50000000,
+    demand: "5/10",
+    price: 2100000,
+    priceType: "Beli",
+    fruitType: "Logia",
+    image: "Lightning_Fruit.webp"
+},
+
+
+
+/* ================================
+   MYTHICAL FRUITS
+================================ */
+
+
+shadow: {
+    value: 6500000,
+    demand: "5/10",
+    price: 2900000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Shadow_Fruit.webp"
+},
+
+
+pain: {
+    value: 10000000,
+    demand: "5/10",
+    price: 2300000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Pain_Fruit.webp"
+},
+
+
+gravity: {
+    value: 10000000,
+    demand: "5/10",
+    price: 2500000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Gravity_Fruit.webp"
+},
+
+
+mammoth: {
+    value: 10000000,
+    demand: "5/10",
+    price: 2700000,
+    priceType: "Beli",
+    fruitType: "Beast",
+    image: "Mammoth_Fruit.webp"
+},
+
+
+spirit: {
+    value: 10000000,
+    demand: "7/10",
+    price: 3400000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Spirit_Fruit.webp"
+},
+
+
+"t-rex": {
+    value: 20000000,
+    demand: "8/10",
+    price: 2700000,
+    priceType: "Beli",
+    fruitType: "Beast",
+    image: "T-Rex_Fruit.webp"
+},
+
+
+venom: {
+    value: 20000000,
+    demand: "8/10",
+    price: 3000000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Venom_Fruit.webp"
+},
+
+
+dough: {
+    value: 30000000,
+    demand: "9/10",
+    price: 2800000,
+    priceType: "Beli",
+    fruitType: "Logia",
+    image: "Dough_Fruit.webp"
+},
+
+
+gas: {
+    value: 60000000,
+    demand: "8/10",
+    price: 3200000,
+    priceType: "Beli",
+    fruitType: "Logia",
+    image: "Gas_Fruit.webp"
+},
+
+
+yeti: {
+    value: 120000000,
+    demand: "7/10",
+    price: 5000000,
+    priceType: "Beli",
+    fruitType: "Beast",
+    image: "Yeti_Fruit.webp"
+},
+
+
+tiger: {
+    value: 130000000,
+    demand: "8/10",
+    price: 5000000,
+    priceType: "Beli",
+    fruitType: "Beast",
+    image: "Tiger_Fruit.webp"
+},
+
+
+control: {
+    value: 160000000,
+    demand: "9/10",
+    price: 9000000,
+    priceType: "Beli",
+    fruitType: "Natural",
+    image: "Control_Fruit.webp"
+},
+
+
+kitsune: {
+    value: 640000000,
+    demand: "10/10",
+    price: 8000000,
+    priceType: "Beli",
+    fruitType: "Beast",
+    image: "Kitsune_Fruit.webp"
+},
+
+
+"east dragon": {
+    value: 3360000000,
+    demand: "7/10",
+    price: 15000000,
+    priceType: "Beli",
+    fruitType: "Beast",
+    image: "Dragon_East.webp"
+},
+
+
+"west dragon": {
+    value: 3910000000,
+    demand: "7/10",
+    price: 15000000,
+    priceType: "Beli",
+    fruitType: "Beast",
+    image: "Dragon_West.webp"
+},
+
+
+
+/* ================================
+   LIMITED ITEMS
+   NO IMAGES
+================================ */
+
+
+"permanent dragon token": {
+    value: "N/A",
+    demand: "6/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"doghouse frame break": {
+    value: 6990000000,
+    demand: "10/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"rabid dog blade": {
+    value: 6240000000,
+    demand: "10/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"dog blade": {
+    value: 580000000,
+    demand: "8/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"fiend yeti": {
+    value: 960000000,
+    demand: "9/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"galaxy empyrean kitsune": {
+    value: 11960000000,
+    demand: "10/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"ember west dragon": {
+    value: 7100000000,
+    demand: "10/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"crimson kitsune": {
+    value: 8700000000,
+    demand: "10/10",
+    price: 2000,
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"meme-meme": {
+    value: 4610000000,
+    demand: "7/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"divine portal": {
+    value: 1670000000,
+    demand: "10/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"purple lightning": {
+    value: 5340000000,
+    demand: "10/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+parrot: {
+    value: "N/A",
+    demand: "1/10",
+    price: 499,
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"red lightning": {
+    value: 2880000000,
+    demand: "10/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"yellow lightning": {
+    value: 1760000000,
+    demand: "10/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"green lightning": {
+    value: 410000000,
+    demand: "7/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+werewolf: {
+    value: 1060000000,
+    demand: "10/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"rose quartz diamond": {
+    value: 350000000,
+    demand: "7/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"emerald diamond": {
+    value: 220000000,
+    demand: "5/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"topaz diamond": {
+    value: 220000000,
+    demand: "5/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"ruby diamond": {
+    value: 160000000,
+    demand: "5/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"dragon token": {
+    value: "N/A",
+    demand: "4/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+eclipse: {
+    value: "N/A",
+    demand: "10/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"super spirit pain": {
+    value: 3300000000,
+    demand: "10/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"torment pain": {
+    value: 160000000,
+    demand: "6/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"sadness pain": {
+    value: 860000000,
+    demand: "7/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"frustration pain": {
+    value: 900000000,
+    demand: "8/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"celestial pain": {
+    value: 1020000000,
+    demand: "8/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"eagle requiem": {
+    value: 160000000,
+    demand: "4/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"eagle glacier": {
+    value: 20000000,
+    demand: "2/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"eagle matrix": {
+    value: 250000000,
+    demand: "5/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"celebration bomb": {
+    value: 10000000,
+    demand: "2/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"azura bomb": {
+    value: 640000000,
+    demand: "6/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"thermite bomb": {
+    value: 580000000,
+    demand: "6/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"nuclear bomb": {
+    value: 610000000,
+    demand: "6/10",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"orange portal": {
+    value: "N/A",
+    demand: "SOON",
+    price: "N/A",
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+
+/* ================================
+   GAMEPASSES
+   NO IMAGES
+================================ */
+
+
+"fruit notifier": {
+    value: 4790000000,
+    demand: "9/10",
+    price: 2700,
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"dark blade": {
+    value: 1020000000,
+    demand: "9/10",
+    price: 1200,
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"mythical scrolls": {
+    value: 1590000000,
+    demand: "4/10",
+    price: 1500,
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"legendary scrolls": {
+    value: 680000000,
+    demand: "3/10",
+    price: 800,
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"+1 fruit storage": {
+    value: 450000000,
+    demand: "10/10",
+    price: 400,
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"2x mastery": {
+    value: 450000000,
+    demand: "10/10",
+    price: 450,
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"2x money": {
+    value: 450000000,
+    demand: "10/10",
+    price: 450,
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"2x boss drops": {
+    value: 300000000,
+    demand: "8/10",
+    price: 350,
+    priceType: "Robux",
+    fruitType: "N/A"
+},
+
+
+"fast boats": {
+    value: 300000000,
+    demand: "9/10",
+    price: 350,
+    priceType: "Robux",
+    fruitType: "N/A"
+}
+
+};
+
+
+
+/* ================================
+   ALIASES
+================================ */
+
+
+const aliases = {
+
+    "dragon west":
+        "west dragon",
+
+    "western dragon":
+        "west dragon",
+
+    "west drag":
+        "west dragon",
+
+    "dragon east":
+        "east dragon",
+
+    "eastern dragon":
+        "east dragon",
+
+    "east drag":
+        "east dragon",
+
+    "trex":
+        "t-rex",
+
+    "t rex":
+        "t-rex",
+
+    "budha":
+        "buddha",
+
+    "buda":
+        "buddha",
+
+    "kit":
+        "kitsune",
+
+    "kitsu":
+        "kitsune",
+
+    "meme":
+        "meme-meme",
+
+    "rabid dog":
+        "rabid dog blade",
+
+    "storage":
+        "+1 fruit storage",
+
+    "fruit storage":
+        "+1 fruit storage",
+
+    "boss drops":
+        "2x boss drops",
+
+    "money":
+        "2x money",
+
+    "mastery":
+        "2x mastery"
+
+};
+
+
+
+/* ================================
+   CHECK VALUE
+================================ */
+
+
+function checkValue() {
+
+
+    let search = document
+        .getElementById("fruitInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+
+    if (search === "") {
+
+        document
+            .getElementById("result")
+            .innerHTML = `
+
+                <p class="not-found">
+
+                    Please enter an item name.
+
+                </p>
+
+            `;
+
+        return;
+
+    }
+
+
+    if (aliases[search]) {
+
+        search =
+            aliases[search];
+
+    }
+
+
+    if (items[search]) {
+
+        showResult(
+            search,
+            items[search]
+        );
+
+        return;
+
+    }
+
+
+    const names =
+        Object.keys(items);
+
+
+    let closestName =
+        null;
+
+
+    let smallestDistance =
+        Infinity;
+
+
+    for (
+        const name
+        of names
+    ) {
+
+
+        const distance =
+            levenshteinDistance(
+                search,
+                name
             );
-        } else {
-            document.getElementById("result").textContent =
-                "Fruit not found.";
+
+
+        if (
+            distance <
+            smallestDistance
+        ) {
+
+
+            smallestDistance =
+                distance;
+
+
+            closestName =
+                name;
+
         }
+
     }
 
 
-    function showResult(fruit, value, originalSearch = null) {
+    let allowedMistakes =
+        2;
 
-        let message =
-            fruit + " is worth $" + value.toLocaleString();
 
-        if (originalSearch !== null) {
-            message =
-                'Did you mean "' +
-                fruit +
-                '"? ' +
-                fruit +
-                " is worth $" +
-                value.toLocaleString();
-        }
+    if (
+        search.length >=
+        10
+    ) {
 
-        document.getElementById("result").textContent = message;
+        allowedMistakes =
+            3;
+
     }
 
 
-    function levenshteinDistance(a, b) {
+    if (
+        smallestDistance <=
+        allowedMistakes
+    ) {
 
-        const matrix = [];
 
-        for (let i = 0; i <= b.length; i++) {
-            matrix[i] = [i];
-        }
+        showResult(
+            closestName,
+            items[closestName],
+            search
+        );
 
-        for (let j = 0; j <= a.length; j++) {
-            matrix[0][j] = j;
-        }
 
-        for (let i = 1; i <= b.length; i++) {
+    } else {
 
-            for (let j = 1; j <= a.length; j++) {
 
-                if (b.charAt(i - 1) === a.charAt(j - 1)) {
-                    matrix[i][j] =
-                        matrix[i - 1][j - 1];
-                } else {
-                    matrix[i][j] =
-                        Math.min(
-                            matrix[i - 1][j - 1] + 1,
-                            matrix[i][j - 1] + 1,
-                            matrix[i - 1][j] + 1
-                        );
-                }
+        document
+            .getElementById("result")
+            .innerHTML = `
+
+                <p class="not-found">
+
+                    Item not found.
+
+                </p>
+
+            `;
+
+    }
+
+}
+
+
+
+/* ================================
+   SHOW RESULT
+================================ */
+
+
+function showResult(
+    name,
+    item,
+    originalSearch = null
+) {
+
+
+    const result =
+        document
+            .getElementById("result");
+
+
+    let suggestion =
+        "";
+
+
+    if (
+        originalSearch
+    ) {
+
+
+        suggestion = `
+
+            <p class="suggestion">
+
+                Did you mean
+
+                <strong>
+
+                    ${formatName(name)}
+
+                </strong>?
+
+            </p>
+
+        `;
+
+    }
+
+
+
+    let imageHTML =
+        "";
+
+
+    if (
+        item.image
+    ) {
+
+
+        imageHTML = `
+
+            <img
+                src="${item.image}"
+                alt="${formatName(name)}"
+                class="item-image"
+                onerror="this.style.display='none'"
+            >
+
+        `;
+
+    }
+
+
+
+    result.innerHTML = `
+
+        ${suggestion}
+
+
+        <div class="result-card">
+
+
+            ${imageHTML}
+
+
+            <h3>
+
+                ${formatName(name)}
+
+            </h3>
+
+
+            <div class="item-info">
+
+
+                <div class="info-row">
+
+                    <span class="label">
+
+                        Value
+
+                    </span>
+
+
+                    <strong class="value">
+
+                        ${formatValue(
+                            item.value
+                        )}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="label">
+
+                        Demand
+
+                    </span>
+
+
+                    <strong class="demand">
+
+                        ${item.demand}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="label">
+
+                        ${item.priceType}
+                        Price
+
+                    </span>
+
+
+                    <strong class="price">
+
+                        ${formatPrice(
+                            item.price,
+                            item.priceType
+                        )}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="label">
+
+                        Fruit Type
+
+                    </span>
+
+
+                    <strong class="fruit-type">
+
+                        ${item.fruitType}
+
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    `;
+
+}
+
+
+
+/* ================================
+   FORMAT VALUE
+================================ */
+
+
+function formatValue(
+    value
+) {
+
+
+    if (
+        value ===
+        "N/A"
+    ) {
+
+        return "N/A";
+
+    }
+
+
+    if (
+        value >=
+        1000000000
+    ) {
+
+
+        return (
+            value /
+            1000000000
+        )
+        .toFixed(2)
+        .replace(
+            /\.?0+$/,
+            ""
+        )
+        + "B";
+
+    }
+
+
+    if (
+        value >=
+        1000000
+    ) {
+
+
+        return (
+            value /
+            1000000
+        )
+        .toFixed(2)
+        .replace(
+            /\.?0+$/,
+            ""
+        )
+        + "M";
+
+    }
+
+
+    if (
+        value >=
+        1000
+    ) {
+
+
+        return (
+            value /
+            1000
+        )
+        .toFixed(1)
+        .replace(
+            /\.0$/,
+            ""
+        )
+        + "K";
+
+    }
+
+
+    return value;
+
+}
+
+
+
+/* ================================
+   FORMAT PRICE
+================================ */
+
+
+function formatPrice(
+    price,
+    type
+) {
+
+
+    if (
+        price ===
+        "N/A"
+    ) {
+
+        return "N/A";
+
+    }
+
+
+    if (
+        typeof price ===
+        "string"
+    ) {
+
+        return price;
+
+    }
+
+
+    if (
+        type ===
+        "Beli"
+    ) {
+
+
+        return (
+            "$" +
+            price.toLocaleString()
+        );
+
+    }
+
+
+    return (
+        price.toLocaleString()
+    );
+
+}
+
+
+
+/* ================================
+   FORMAT NAME
+================================ */
+
+
+function formatName(
+    name
+) {
+
+
+    return name
+        .split(" ")
+        .map(
+
+            word =>
+
+                word
+                    .charAt(0)
+                    .toUpperCase()
+
+                +
+
+                word.slice(1)
+
+        )
+
+        .join(" ");
+
+}
+
+
+
+/* ================================
+   TYPO MATCHING
+================================ */
+
+
+function levenshteinDistance(
+    a,
+    b
+) {
+
+
+    const matrix =
+        [];
+
+
+    for (
+        let i = 0;
+        i <= b.length;
+        i++
+    ) {
+
+
+        matrix[i] =
+            [i];
+
+    }
+
+
+    for (
+        let j = 0;
+        j <= a.length;
+        j++
+    ) {
+
+
+        matrix[0][j] =
+            j;
+
+    }
+
+
+    for (
+        let i = 1;
+        i <= b.length;
+        i++
+    ) {
+
+
+        for (
+            let j = 1;
+            j <= a.length;
+            j++
+        ) {
+
+
+            if (
+                b.charAt(i - 1)
+                ===
+                a.charAt(j - 1)
+            ) {
+
+
+                matrix[i][j] =
+                    matrix[i - 1]
+                          [j - 1];
+
+
+            } else {
+
+
+                matrix[i][j] =
+                    Math.min(
+
+                        matrix[i - 1]
+                              [j - 1]
+                        + 1,
+
+                        matrix[i]
+                              [j - 1]
+                        + 1,
+
+                        matrix[i - 1]
+                              [j]
+                        + 1
+
+                    );
+
             }
+
         }
 
-        return matrix[b.length][a.length];
     }
+
+
+    return (
+        matrix[b.length]
+              [a.length]
+    );
+
+}
+
+
+
+/* ================================
+   ENTER KEY SEARCH
+================================ */
+
+
+document
+    .getElementById(
+        "fruitInput"
+    )
+
+    .addEventListener(
+        "keydown",
+
+        function(event) {
+
+
+            if (
+                event.key ===
+                "Enter"
+            ) {
+
+
+                checkValue();
+
+            }
+
+        }
+
+    );
+
+
 </script>
 
+
 </body>
+
 </html>
