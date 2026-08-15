@@ -295,6 +295,42 @@
         }
 
 
+
+        /* Dragon choice buttons */
+
+        .dragon-options {
+            display: flex;
+
+            gap: 12px;
+
+            justify-content: center;
+
+            flex-wrap: wrap;
+
+            margin-top: 15px;
+        }
+
+
+        .dragon-choice {
+            min-width: 150px;
+        }
+
+
+        @media (max-width: 600px) {
+
+            .dragon-options {
+                flex-direction: column;
+
+                width: 100%;
+            }
+
+
+            .dragon-choice {
+                width: 100%;
+            }
+        }
+
+
         @media (max-width: 600px) {
 
             h1 {
@@ -315,7 +351,6 @@
             .search-row button {
                 width: 100%;
             }
-
         }
 
     </style>
@@ -1309,7 +1344,6 @@ const aliases = {
 
     "mastery":
         "2x mastery"
-
 };
 
 
@@ -1320,7 +1354,6 @@ const aliases = {
 
 
 function checkValue() {
-
 
     let search = document
         .getElementById("fruitInput")
@@ -1334,25 +1367,54 @@ function checkValue() {
         document
             .getElementById("result")
             .innerHTML = `
-
                 <p class="not-found">
-
                     Please enter an item name.
-
                 </p>
-
             `;
 
         return;
-
     }
 
 
     if (aliases[search]) {
+        search = aliases[search];
+    }
 
-        search =
-            aliases[search];
 
+    // If somebody only types "dragon", let them choose which one
+    if (search === "dragon") {
+
+        document
+            .getElementById("result")
+            .innerHTML = `
+
+                <div class="result-card">
+
+                    <h3>Which Dragon?</h3>
+
+                    <div class="dragon-options">
+
+                        <button
+                            class="dragon-choice"
+                            onclick="chooseDragon('east dragon')"
+                        >
+                            East Dragon
+                        </button>
+
+                        <button
+                            class="dragon-choice"
+                            onclick="chooseDragon('west dragon')"
+                        >
+                            West Dragon
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        return;
     }
 
 
@@ -1364,27 +1426,17 @@ function checkValue() {
         );
 
         return;
-
     }
 
 
-    const names =
-        Object.keys(items);
+    const names = Object.keys(items);
+
+    let closestName = null;
+
+    let smallestDistance = Infinity;
 
 
-    let closestName =
-        null;
-
-
-    let smallestDistance =
-        Infinity;
-
-
-    for (
-        const name
-        of names
-    ) {
-
+    for (const name of names) {
 
         const distance =
             levenshteinDistance(
@@ -1393,44 +1445,24 @@ function checkValue() {
             );
 
 
-        if (
-            distance <
-            smallestDistance
-        ) {
+        if (distance < smallestDistance) {
 
+            smallestDistance = distance;
 
-            smallestDistance =
-                distance;
-
-
-            closestName =
-                name;
-
+            closestName = name;
         }
-
     }
 
 
-    let allowedMistakes =
-        2;
+    let allowedMistakes = 2;
 
 
-    if (
-        search.length >=
-        10
-    ) {
-
-        allowedMistakes =
-            3;
-
+    if (search.length >= 10) {
+        allowedMistakes = 3;
     }
 
 
-    if (
-        smallestDistance <=
-        allowedMistakes
-    ) {
-
+    if (smallestDistance <= allowedMistakes) {
 
         showResult(
             closestName,
@@ -1438,24 +1470,34 @@ function checkValue() {
             search
         );
 
-
     } else {
-
 
         document
             .getElementById("result")
             .innerHTML = `
 
                 <p class="not-found">
-
                     Item not found.
-
                 </p>
 
             `;
-
     }
+}
 
+
+
+/* ================================
+   DRAGON CHOICE
+================================ */
+
+
+function chooseDragon(dragonName) {
+
+    document
+        .getElementById("fruitInput")
+        .value = dragonName;
+
+    checkValue();
 }
 
 
@@ -1471,20 +1513,15 @@ function showResult(
     originalSearch = null
 ) {
 
-
     const result =
         document
             .getElementById("result");
 
 
-    let suggestion =
-        "";
+    let suggestion = "";
 
 
-    if (
-        originalSearch
-    ) {
-
+    if (originalSearch) {
 
         suggestion = `
 
@@ -1493,27 +1530,19 @@ function showResult(
                 Did you mean
 
                 <strong>
-
                     ${formatName(name)}
-
                 </strong>?
 
             </p>
 
         `;
-
     }
 
 
-
-    let imageHTML =
-        "";
+    let imageHTML = "";
 
 
-    if (
-        item.image
-    ) {
-
+    if (item.image) {
 
         imageHTML = `
 
@@ -1525,9 +1554,7 @@ function showResult(
             >
 
         `;
-
     }
-
 
 
     result.innerHTML = `
@@ -1542,9 +1569,7 @@ function showResult(
 
 
             <h3>
-
                 ${formatName(name)}
-
             </h3>
 
 
@@ -1554,18 +1579,11 @@ function showResult(
                 <div class="info-row">
 
                     <span class="label">
-
                         Value
-
                     </span>
-
 
                     <strong class="value">
-
-                        ${formatValue(
-                            item.value
-                        )}
-
+                        ${formatValue(item.value)}
                     </strong>
 
                 </div>
@@ -1574,16 +1592,11 @@ function showResult(
                 <div class="info-row">
 
                     <span class="label">
-
                         Demand
-
                     </span>
-
 
                     <strong class="demand">
-
                         ${item.demand}
-
                     </strong>
 
                 </div>
@@ -1592,20 +1605,14 @@ function showResult(
                 <div class="info-row">
 
                     <span class="label">
-
-                        ${item.priceType}
-                        Price
-
+                        ${item.priceType} Price
                     </span>
 
-
                     <strong class="price">
-
                         ${formatPrice(
                             item.price,
                             item.priceType
                         )}
-
                     </strong>
 
                 </div>
@@ -1614,16 +1621,11 @@ function showResult(
                 <div class="info-row">
 
                     <span class="label">
-
                         Fruit Type
-
                     </span>
 
-
                     <strong class="fruit-type">
-
                         ${item.fruitType}
-
                     </strong>
 
                 </div>
@@ -1635,7 +1637,6 @@ function showResult(
         </div>
 
     `;
-
 }
 
 
@@ -1645,83 +1646,47 @@ function showResult(
 ================================ */
 
 
-function formatValue(
-    value
-) {
+function formatValue(value) {
 
-
-    if (
-        value ===
-        "N/A"
-    ) {
-
+    if (value === "N/A") {
         return "N/A";
-
     }
 
 
-    if (
-        value >=
-        1000000000
-    ) {
-
+    if (value >= 1000000000) {
 
         return (
-            value /
-            1000000000
+            value / 1000000000
         )
         .toFixed(2)
-        .replace(
-            /\.?0+$/,
-            ""
-        )
+        .replace(/\.?0+$/, "")
         + "B";
-
     }
 
 
-    if (
-        value >=
-        1000000
-    ) {
-
+    if (value >= 1000000) {
 
         return (
-            value /
-            1000000
+            value / 1000000
         )
         .toFixed(2)
-        .replace(
-            /\.?0+$/,
-            ""
-        )
+        .replace(/\.?0+$/, "")
         + "M";
-
     }
 
 
-    if (
-        value >=
-        1000
-    ) {
-
+    if (value >= 1000) {
 
         return (
-            value /
-            1000
+            value / 1000
         )
         .toFixed(1)
-        .replace(
-            /\.0$/,
-            ""
-        )
+        .replace(/\.0$/, "")
         + "K";
-
     }
 
 
     return value;
-
 }
 
 
@@ -1736,45 +1701,26 @@ function formatPrice(
     type
 ) {
 
-
-    if (
-        price ===
-        "N/A"
-    ) {
-
+    if (price === "N/A") {
         return "N/A";
-
     }
 
 
-    if (
-        typeof price ===
-        "string"
-    ) {
-
+    if (typeof price === "string") {
         return price;
-
     }
 
 
-    if (
-        type ===
-        "Beli"
-    ) {
-
+    if (type === "Beli") {
 
         return (
             "$" +
             price.toLocaleString()
         );
-
     }
 
 
-    return (
-        price.toLocaleString()
-    );
-
+    return price.toLocaleString();
 }
 
 
@@ -1784,29 +1730,19 @@ function formatPrice(
 ================================ */
 
 
-function formatName(
-    name
-) {
-
+function formatName(name) {
 
     return name
         .split(" ")
         .map(
-
             word =>
-
                 word
                     .charAt(0)
                     .toUpperCase()
-
                 +
-
                 word.slice(1)
-
         )
-
         .join(" ");
-
 }
 
 
@@ -1821,9 +1757,7 @@ function levenshteinDistance(
     b
 ) {
 
-
-    const matrix =
-        [];
+    const matrix = [];
 
 
     for (
@@ -1832,10 +1766,7 @@ function levenshteinDistance(
         i++
     ) {
 
-
-        matrix[i] =
-            [i];
-
+        matrix[i] = [i];
     }
 
 
@@ -1845,10 +1776,7 @@ function levenshteinDistance(
         j++
     ) {
 
-
-        matrix[0][j] =
-            j;
-
+        matrix[0][j] = j;
     }
 
 
@@ -1858,13 +1786,11 @@ function levenshteinDistance(
         i++
     ) {
 
-
         for (
             let j = 1;
             j <= a.length;
             j++
         ) {
-
 
             if (
                 b.charAt(i - 1)
@@ -1872,44 +1798,23 @@ function levenshteinDistance(
                 a.charAt(j - 1)
             ) {
 
-
                 matrix[i][j] =
-                    matrix[i - 1]
-                          [j - 1];
-
+                    matrix[i - 1][j - 1];
 
             } else {
 
-
                 matrix[i][j] =
                     Math.min(
-
-                        matrix[i - 1]
-                              [j - 1]
-                        + 1,
-
-                        matrix[i]
-                              [j - 1]
-                        + 1,
-
-                        matrix[i - 1]
-                              [j]
-                        + 1
-
+                        matrix[i - 1][j - 1] + 1,
+                        matrix[i][j - 1] + 1,
+                        matrix[i - 1][j] + 1
                     );
-
             }
-
         }
-
     }
 
 
-    return (
-        matrix[b.length]
-              [a.length]
-    );
-
+    return matrix[b.length][a.length];
 }
 
 
@@ -1920,28 +1825,17 @@ function levenshteinDistance(
 
 
 document
-    .getElementById(
-        "fruitInput"
-    )
-
+    .getElementById("fruitInput")
     .addEventListener(
         "keydown",
 
         function(event) {
 
-
-            if (
-                event.key ===
-                "Enter"
-            ) {
-
-
+            if (event.key === "Enter") {
                 checkValue();
-
             }
 
         }
-
     );
 
 
